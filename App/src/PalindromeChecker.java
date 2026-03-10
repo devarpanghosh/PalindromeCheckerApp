@@ -1,101 +1,52 @@
 import java.util.Scanner;
-import java.util.Stack;
 
 /**
  * ============================================================
- * MAIN CLASS - UseCase9PalindromeCheckerApp
+ * MAIN CLASS - UseCase10PalindromeCheckerApp
  * ============================================================
- * * Use Case 9: Menu-Driven Palindrome Checker
+ * * Use Case 10: Sentence Based Palindrome Check
  * * Description:
- * This class provides a menu-driven interface for
- * palindrome validation.
+ * This class validates whether a sentence is a palindrome
+ * by ignoring spaces, punctuation, and case sensitivity.
  * * At this stage, the application:
- * - Accepts user input via Scanner
- * - Provides multiple validation options
- * - Implements logic for different techniques
- * - Displays results based on user choice
- * * This introduces interactive application design.
+ * - Uses Regular Expressions (Regex) for cleaning
+ * - Normalizes the string (lowercase)
+ * - Uses StringBuilder for efficient reversal
+ * - Compares the processed results
+ * * This demonstrates real-world text processing.
  * * @author Developer
- * @version 9.0
+ * @version 10.0
  */
 public class PalindromeChecker {
 
     /**
-     * Application entry point for UC9.
+     * Application entry point for UC10.
      * * @param args Command-line arguments
      */
     public static void main(String[] args) {
-        // Create a Scanner object for user input
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("--- Palindrome Checker Menu ---");
-        System.out.print("Enter a string to check: ");
-        String input = scanner.nextLine();
+        System.out.println("--- Sentence Palindrome Checker ---");
+        System.out.print("Enter a phrase (e.g., 'A man, a plan, a canal: Panama'): ");
+        String original = scanner.nextLine();
 
-        System.out.println("\nSelect Validation Technique:");
-        System.out.println("1. Basic Loop (Half-Length)");
-        System.out.println("2. String Reversal");
-        System.out.println("3. Stack-Based (LIFO)");
-        System.out.print("Enter your choice (1-3): ");
+        // Step 1: Data Cleaning (Normalization)
+        // [^a-zA-Z0-9] is a regex that matches anything that is NOT a letter or number
+        String cleaned = original.replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
 
-        int choice = scanner.nextInt();
-        boolean isPalindrome = false;
+        // Step 2: Efficient Reversal using StringBuilder
+        StringBuilder sb = new StringBuilder(cleaned);
+        String reversed = sb.reverse().toString();
 
-        // Switch statement to handle different algorithmic choices
-        switch (choice) {
-            case 1:
-                // Option 1: Basic Loop Optimization
-                isPalindrome = true;
-                for (int i = 0; i < input.length() / 2; i++) {
-                    if (input.charAt(i) != input.charAt(input.length() - 1 - i)) {
-                        isPalindrome = false;
-                        break;
-                    }
-                }
-                System.out.println("Method Used: Basic Loop");
-                break;
+        // Step 3: Comparison and Output
+        System.out.println("\nProcessed String: " + cleaned);
 
-            case 2:
-                // Option 2: String Reversal
-                String reversed = "";
-                for (int i = input.length() - 1; i >= 0; i--) {
-                    reversed += input.charAt(i);
-                }
-                isPalindrome = input.equalsIgnoreCase(reversed);
-                System.out.println("Method Used: String Reversal");
-                break;
-
-            case 3:
-                // Option 3: Stack-Based
-                Stack<Character> stack = new Stack<>();
-                for (char c : input.toCharArray()) {
-                    stack.push(c);
-                }
-                isPalindrome = true;
-                for (char c : input.toCharArray()) {
-                    if (c != stack.pop()) {
-                        isPalindrome = false;
-                        break;
-                    }
-                }
-                System.out.println("Method Used: Stack (LIFO)");
-                break;
-
-            default:
-                System.out.println("Invalid choice. Defaulting to Basic Loop.");
-                // Default logic...
-                break;
-        }
-
-        // Final result display
-        System.out.println("\nInput: " + input);
-        if (isPalindrome) {
-            System.out.println("Result: Success! It's a palindrome.");
+        if (!cleaned.isEmpty() && cleaned.equals(reversed)) {
+            System.out.println("Result: It is a Palindrome sentence!");
         } else {
-            System.out.println("Result: Failure! It's NOT a palindrome.");
+            System.out.println("Result: It is NOT a Palindrome sentence.");
         }
 
-        // Close the scanner to prevent memory leaks
         scanner.close();
     }
 }

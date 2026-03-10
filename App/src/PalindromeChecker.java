@@ -2,51 +2,62 @@ import java.util.Scanner;
 
 /**
  * ============================================================
- * MAIN CLASS - UseCase10PalindromeCheckerApp
+ * MAIN CLASS - UseCase11PalindromeCheckerApp
  * ============================================================
- * * Use Case 10: Sentence Based Palindrome Check
+ * * Use Case 11: Recursive Palindrome Validation
  * * Description:
- * This class validates whether a sentence is a palindrome
- * by ignoring spaces, punctuation, and case sensitivity.
+ * This class validates a palindrome using a recursive
+ * approach instead of traditional loops.
  * * At this stage, the application:
- * - Uses Regular Expressions (Regex) for cleaning
- * - Normalizes the string (lowercase)
- * - Uses StringBuilder for efficient reversal
- * - Compares the processed results
- * * This demonstrates real-world text processing.
+ * - Breaks the problem into smaller sub-problems
+ * - Defines a base case (string length 0 or 1)
+ * - Uses recursive calls for character comparison
+ * - Returns the final boolean result
+ * * This demonstrates functional programming logic.
  * * @author Developer
- * @version 10.0
+ * @version 11.0
  */
 public class PalindromeChecker {
 
     /**
-     * Application entry point for UC10.
+     * Application entry point for UC11.
      * * @param args Command-line arguments
      */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("--- Sentence Palindrome Checker ---");
-        System.out.print("Enter a phrase (e.g., 'A man, a plan, a canal: Panama'): ");
-        String original = scanner.nextLine();
+        System.out.println("--- Recursive Palindrome Checker ---");
+        System.out.print("Enter a word: ");
+        String input = scanner.nextLine();
 
-        // Step 1: Data Cleaning (Normalization)
-        // [^a-zA-Z0-9] is a regex that matches anything that is NOT a letter or number
-        String cleaned = original.replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
-
-        // Step 2: Efficient Reversal using StringBuilder
-        StringBuilder sb = new StringBuilder(cleaned);
-        String reversed = sb.reverse().toString();
-
-        // Step 3: Comparison and Output
-        System.out.println("\nProcessed String: " + cleaned);
-
-        if (!cleaned.isEmpty() && cleaned.equals(reversed)) {
-            System.out.println("Result: It is a Palindrome sentence!");
+        // Call the recursive helper method
+        if (isPalindrome(input)) {
+            System.out.println("Result: \"" + input + "\" is a palindrome.");
         } else {
-            System.out.println("Result: It is NOT a Palindrome sentence.");
+            System.out.println("Result: \"" + input + "\" is NOT a palindrome.");
         }
 
         scanner.close();
+    }
+
+    /**
+     * Recursive method to check for palindrome.
+     * * @param str The string to check
+     * @return true if palindrome, false otherwise
+     */
+    public static boolean isPalindrome(String str) {
+        // Base Case 1: If string is empty or has 1 char, it's a palindrome
+        if (str.length() <= 1) {
+            return true;
+        }
+
+        // Recursive Step: Compare first and last characters
+        if (str.charAt(0) == str.charAt(str.length() - 1)) {
+            // If they match, check the substring excluding the first and last chars
+            return isPalindrome(str.substring(1, str.length() - 1));
+        }
+
+        // If characters don't match, it's not a palindrome
+        return false;
     }
 }

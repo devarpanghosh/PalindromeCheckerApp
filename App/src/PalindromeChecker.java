@@ -2,62 +2,69 @@ import java.util.Scanner;
 
 /**
  * ============================================================
- * MAIN CLASS - UseCase11PalindromeCheckerApp
+ * UTILITY CLASS - PalindromeUtils
  * ============================================================
- * * Use Case 11: Recursive Palindrome Validation
- * * Description:
- * This class validates a palindrome using a recursive
- * approach instead of traditional loops.
- * * At this stage, the application:
- * - Breaks the problem into smaller sub-problems
- * - Defines a base case (string length 0 or 1)
- * - Uses recursive calls for character comparison
- * - Returns the final boolean result
- * * This demonstrates functional programming logic.
- * * @author Developer
- * @version 11.0
+ * Contains reusable logic for palindrome validation.
  */
-public class PalindromeChecker {
+class PalindromeUtils {
 
     /**
-     * Application entry point for UC11.
-     * * @param args Command-line arguments
+     * Basic validation for single words.
+     * @param text The string to check.
+     * @return true if palindrome.
      */
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
+    public boolean isPalindrome(String text) {
+        String cleaned = text.toLowerCase();
+        int start = 0;
+        int end = cleaned.length() - 1;
 
-        System.out.println("--- Recursive Palindrome Checker ---");
-        System.out.print("Enter a word: ");
-        String input = scanner.nextLine();
-
-        // Call the recursive helper method
-        if (isPalindrome(input)) {
-            System.out.println("Result: \"" + input + "\" is a palindrome.");
-        } else {
-            System.out.println("Result: \"" + input + "\" is NOT a palindrome.");
+        while (start < end) {
+            if (cleaned.charAt(start) != cleaned.charAt(end)) {
+                return false;
+            }
+            start++;
+            end--;
         }
-
-        scanner.close();
+        return true;
     }
 
     /**
-     * Recursive method to check for palindrome.
-     * * @param str The string to check
-     * @return true if palindrome, false otherwise
+     * Overloaded method for sentence validation with a flag.
+     * @param text The sentence to check.
+     * @param ignoreSpecialChars flag to strip punctuation.
+     * @return true if palindrome.
      */
-    public static boolean isPalindrome(String str) {
-        // Base Case 1: If string is empty or has 1 char, it's a palindrome
-        if (str.length() <= 1) {
-            return true;
+    public boolean isPalindrome(String text, boolean ignoreSpecialChars) {
+        if (ignoreSpecialChars) {
+            // Use regex to keep only alphanumeric characters
+            text = text.replaceAll("[^a-zA-Z0-9]", "");
         }
+        return isPalindrome(text); // Reuse the basic logic
+    }
+}
 
-        // Recursive Step: Compare first and last characters
-        if (str.charAt(0) == str.charAt(str.length() - 1)) {
-            // If they match, check the substring excluding the first and last chars
-            return isPalindrome(str.substring(1, str.length() - 1));
-        }
+/**
+ * ============================================================
+ * MAIN CLASS - UseCase12PalindromeCheckerApp
+ * ============================================================
+ * * Use Case 12: Object-Oriented Palindrome Checker
+ * * Description:
+ * This class uses an external utility class and method
+ * overloading to handle different validation types.
+ */
+public class PalindromeChecker {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        PalindromeUtils utils = new PalindromeUtils();
 
-        // If characters don't match, it's not a palindrome
-        return false;
+        System.out.println("--- OOP Palindrome Checker ---");
+        System.out.print("Enter text: ");
+        String input = scanner.nextLine();
+
+        // Demonstrate Overloading
+        System.out.println("Result (Strict): " + utils.isPalindrome(input));
+        System.out.println("Result (Ignore Special Chars): " + utils.isPalindrome(input, true));
+
+        scanner.close();
     }
 }

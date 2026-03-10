@@ -1,69 +1,128 @@
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Scanner;
+import java.util.Stack;
 
-/**
- * ============================================================
- * UTILITY CLASS - PalindromeUtils
- * ============================================================
- * Contains reusable logic for palindrome validation.
- */
-class PalindromeUtils {
+public class PalindromeChecker {
 
-    /**
-     * Basic validation for single words.
-     * @param text The string to check.
-     * @return true if palindrome.
-     */
-    public boolean isPalindrome(String text) {
-        String cleaned = text.toLowerCase();
-        int start = 0;
-        int end = cleaned.length() - 1;
-
+    // -------------------------------------------------------
+    // Algorithm 1: Two-Pointer (char array)
+    // -------------------------------------------------------
+    static boolean twoPointer(String input) {
+        char[] chars = input.toCharArray();
+        int start = 0, end = chars.length - 1;
         while (start < end) {
-            if (cleaned.charAt(start) != cleaned.charAt(end)) {
-                return false;
-            }
+            if (chars[start] != chars[end]) return false;
             start++;
             end--;
         }
         return true;
     }
 
-    /**
-     * Overloaded method for sentence validation with a flag.
-     * @param text The sentence to check.
-     * @param ignoreSpecialChars flag to strip punctuation.
-     * @return true if palindrome.
-     */
-    public boolean isPalindrome(String text, boolean ignoreSpecialChars) {
-        if (ignoreSpecialChars) {
-            // Use regex to keep only alphanumeric characters
-            text = text.replaceAll("[^a-zA-Z0-9]", "");
-        }
-        return isPalindrome(text); // Reuse the basic logic
+    // -------------------------------------------------------
+    // Algorithm 2: Stack-Based
+    // -------------------------------------------------------
+    static boolean stackBased(String input) {
+        Stack<Character> stack = new Stack<>();
+        for (int i = 0; i < input.length(); i++)
+            stack.push(input.charAt(i));
+        for (int i = 0; i < input.length(); i++)
+            if (input.charAt(i) != stack.pop()) return false;
+        return true;
     }
-}
 
-/**
- * ============================================================
- * MAIN CLASS - UseCase12PalindromeCheckerApp
- * ============================================================
- * * Use Case 12: Object-Oriented Palindrome Checker
- * * Description:
- * This class uses an external utility class and method
- * overloading to handle different validation types.
- */
-public class PalindromeChecker {
+    // -------------------------------------------------------
+    // Algorithm 3: Queue + Stack
+    // -------------------------------------------------------
+    static boolean queueStack(String input) {
+        Queue<Character> queue = new LinkedList<>();
+        Stack<Character> stack = new Stack<>();
+        for (int i = 0; i < input.length(); i++) {
+            queue.add(input.charAt(i));
+            stack.push(input.charAt(i));
+        }
+        while (!queue.isEmpty())
+            if (queue.poll() != stack.pop()) return false;
+        return true;
+    }
+
+    // -------------------------------------------------------
+    // Algorithm 4: Deque-Based
+    // -------------------------------------------------------
+    static boolean dequeBased(String input) {
+        Deque<Character> deque = new ArrayDeque<>();
+        for (int i = 0; i < input.length(); i++)
+            deque.addLast(input.charAt(i));
+        while (deque.size() > 1)
+            if (deque.removeFirst() != deque.removeLast()) return false;
+        return true;
+    }
+
+    // -------------------------------------------------------
+    // Algorithm 5: Recursive
+    // -------------------------------------------------------
+    static boolean recursive(String input, int start, int end) {
+        if (start >= end) return true;
+        if (input.charAt(start) != input.charAt(end)) return false;
+        return recursive(input, start + 1, end - 1);
+    }
+
+    /**
+     * Application entry point.
+     *
+     * @param args Command-line arguments
+     */
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        PalindromeUtils utils = new PalindromeUtils();
 
-        System.out.println("--- OOP Palindrome Checker ---");
-        System.out.print("Enter text: ");
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter a string: ");
         String input = scanner.nextLine();
 
-        // Demonstrate Overloading
-        System.out.println("Result (Strict): " + utils.isPalindrome(input));
-        System.out.println("Result (Ignore Special Chars): " + utils.isPalindrome(input, true));
+        System.out.println("\n--- Performance Comparison ---");
+        System.out.printf("%-25s %-15s %s%n", "Algorithm", "Result", "Time (ns)");
+        System.out.println("------------------------------------------------------");
+
+        long start, end, duration;
+        boolean result;
+
+        // Algorithm 1: Two-Pointer
+        start = System.nanoTime();
+        result = twoPointer(input);
+        end = System.nanoTime();
+        duration = end - start;
+        System.out.printf("%-25s %-15s %d ns%n", "Two-Pointer", result, duration);
+
+        // Algorithm 2: Stack-Based
+        start = System.nanoTime();
+        result = stackBased(input);
+        end = System.nanoTime();
+        duration = end - start;
+        System.out.printf("%-25s %-15s %d ns%n", "Stack-Based", result, duration);
+
+        // Algorithm 3: Queue + Stack
+        start = System.nanoTime();
+        result = queueStack(input);
+        end = System.nanoTime();
+        duration = end - start;
+        System.out.printf("%-25s %-15s %d ns%n", "Queue + Stack", result, duration);
+
+        // Algorithm 4: Deque-Based
+        start = System.nanoTime();
+        result = dequeBased(input);
+        end = System.nanoTime();
+        duration = end - start;
+        System.out.printf("%-25s %-15s %d ns%n", "Deque-Based", result, duration);
+
+        // Algorithm 5: Recursive
+        start = System.nanoTime();
+        result = recursive(input, 0, input.length() - 1);
+        end = System.nanoTime();
+        duration = end - start;
+        System.out.printf("%-25s %-15s %d ns%n", "Recursive", result, duration);
+
+        System.out.println("------------------------------------------------------");
 
         scanner.close();
     }
